@@ -1,0 +1,29 @@
+<header class="bg-success text-white py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex align-items-center mb-2 mb-md-0">
+            <h1 class="h4 m-0">🌿 AgroExpertos</h1>
+        </div>
+        <div class="text-end small">
+            {% if user.is_authenticated %}
+                <span class="me-2">Bienvenido, {{ user.first_name }}</span>
+                {% if user.rol == 'admin' %}
+                    <a href="{% url 'dashboard' %}" class="text-white text-decoration-none me-2">Inicio Admin</a>
+                    <a href="{% url 'revisar_solicitudes' %}" class="text-white text-decoration-none me-2">Solicitudes</a>
+                    <a href="{% url 'listar_enfermedades' %}" class="text-white text-decoration-none me-2">Enfermedades</a>
+                    <a href="{% url 'reportes_admin' %}" class="text-white text-decoration-none me-2">Reportes</a>
+                    {% if request.user.es_superadmin %}
+                        <a href="{% url 'crear_admin' %}" class="text-white text-decoration-none me-2">Crear Admin</a>
+                    {% endif %}
+                {% elif user.rol == 'experto' and user.estado == 'activo' %}
+                    <a href="{% url 'dashboard' %}" class="text-white text-decoration-none me-2">Inicio Experto</a>
+                    <a href="{% url 'listar_tratamientos' %}" class="text-white text-decoration-none me-2">Mis tratamientos</a>
+                    <a href="{% url 'crear_tratamiento' %}" class="text-white text-decoration-none me-2">Nuevo tratamiento</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="text-white text-decoration-none">Cerrar sesión</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="text-white text-decoration-none me-2">Iniciar sesión</a>
+                <a href="{% url 'registro_experto' %}" class="text-white text-decoration-none">Registrarse</a>
+            {% endif %}
+        </div>
+    </div>
+</header>

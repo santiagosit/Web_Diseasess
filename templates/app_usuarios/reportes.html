@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4 fade-in">
+    <h2 class="mb-4 text-primary">📊 Reporte de Actividad</h2>
+
+    <!-- Expertos con más tratamientos -->
+    <div class="mb-5">
+        <h4 class="text-success">Expertos con más tratamientos</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped shadow-sm">
+                <thead class="table-success">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>N° de tratamientos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for experto in expertos %}
+                    <tr>
+                        <td>{{ experto.first_name }} {{ experto.last_name }}</td>
+                        <td>{{ experto.email }}</td>
+                        <td>{{ experto.num_tratamientos }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Enfermedades con más tratamientos registrados -->
+    <div class="mb-5">
+        <h4 class="text-warning">Enfermedades más tratadas</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover shadow-sm">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>N° de tratamientos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enfermedad in enfermedades %}
+                    <tr>
+                        <td>{{ enfermedad.nombre }}</td>
+                        <td>
+                            {% if enfermedad.estado == 'Verificada' %}
+                                <span class="badge bg-success">{{ enfermedad.estado }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ enfermedad.estado }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ enfermedad.num_tratamientos }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

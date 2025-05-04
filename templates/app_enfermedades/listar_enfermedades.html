@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Enfermedades registradas{% endblock %}
+
+{% block content %}
+<div class="container mt-4 fade-in">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-success">Enfermedades registradas</h2>
+        <a href="{% url 'crear_enfermedad' %}" class="btn btn-success">+ Registrar nueva</a>
+    </div>
+
+    {% if enfermedades %}
+        <div class="row g-4">
+            {% for e in enfermedades %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm card-hover h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ e.nombre }}</h5>
+                            <p class="mb-2">
+                                {% if e.estado == 'Verificada' %}
+                                    <span class="badge bg-success">{{ e.estado }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ e.estado }}</span>
+                                {% endif %}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'editar_enfermedad' e.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <a href="{% url 'eliminar_enfermedad' e.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">No hay enfermedades registradas.</div>
+    {% endif %}
+
+</div>
+{% endblock %}

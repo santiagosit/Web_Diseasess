@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4 fade-in">
+
+    <!-- Título -->
+    <h2 class="text-success mb-4">Solicitudes de Expertos Pendientes</h2>
+
+    {% if expertos %}
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered shadow-sm">
+            <thead class="table-success">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Especialidad</th>
+                    <th>Dependencia</th>
+                    <th>Documento</th>
+                    <th>Cuestionario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for experto in expertos %}
+                <tr>
+                    <td>{{ experto.first_name }} {{ experto.last_name }}</td>
+                    <td>{{ experto.email }}</td>
+                    <td>{{ experto.especialidad }}</td>
+                    <td>{{ experto.dependencia }}</td>
+                    <td>
+                        {% if experto.documentos %}
+                            <a href="{{ experto.documentos.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Ver</a>
+                        {% else %}
+                            <span class="text-muted">No adjunto</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% with cuestionario=experto.cuestionario_set.last %}
+                            {{ cuestionario.puntaje }}% 
+                            {% if cuestionario.aprobado %}
+                                <span class="badge bg-success">Aprobado</span>
+                            {% else %}
+                                <span class="badge bg-danger">Reprobado</span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>
+                        <a href="{% url 'cambiar_estado' experto.id 'activo' %}" class="btn btn-sm btn-success">Aprobar</a>
+                        <a href="{% url 'cambiar_estado' experto.id 'inactivo' %}" class="btn btn-sm btn-danger">Rechazar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="text-muted">No hay expertos pendientes.</p>
+    {% endif %}
+
+    <!-- Sección de expertos ya registrados -->
+    <h2 class="mt-5 text-primary">Expertos registrados</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Especialidad</th>
+                    <th>Dependencia</th>
+                    <th>Estado actual</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for experto in expertos_otros %}
+                <tr>
+                    <td>{{ experto.first_name }} {{ experto.last_name }}</td>
+                    <td>{{ experto.email }}</td>
+                    <td>{{ experto.especialidad }}</td>
+                    <td>{{ experto.dependencia }}</td>
+                    <td>
+                        {% if experto.estado == 'activo' %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if experto.estado == 'activo' %}
+                            <a href="{% url 'cambiar_estado' experto.id 'inactivo' %}" class="btn btn-sm btn-warning">Inactivar</a>
+                        {% else %}
+                            <a href="{% url 'cambiar_estado' experto.id 'activo' %}" class="btn btn-sm btn-success">Activar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Resultado del cuestionario</h2>
+<p>Puntaje: {{ puntaje }}%</p>
+{% if aprobado %}
+    <p>¡Felicidades! Has aprobado el test.</p>
+{% else %}
+    <p>No aprobaste. El administrador evaluará tu registro.</p>
+{% endif %}
+<a href="{% url 'login' %}">Volver al inicio</a>
+{% endblock %}

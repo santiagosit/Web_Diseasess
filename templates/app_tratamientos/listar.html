@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Mis Tratamientos{% endblock %}
+
+{% block content %}
+<div class="container mt-4 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-success">Mis Tratamientos</h2>
+        <a href="{% url 'crear_tratamiento' %}" class="btn btn-success">+ Nuevo tratamiento</a>
+    </div>
+
+    {% if tratamientos %}
+        <div class="row g-4">
+            {% for t in tratamientos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm card-hover h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ t.enfermedad.nombre }}</h5>
+                            <p class="mb-2">
+                                <span class="badge bg-info">{{ t.estado }}</span>
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'editar_tratamiento' t.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <a href="{% url 'eliminar_tratamiento' t.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            Aún no has registrado tratamientos.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="container mt-4 fade-in">
+    <h2 class="mb-4 text-success">Registro de Experto</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <!-- Renderizar campos con clases Bootstrap -->
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-success">Registrarse</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

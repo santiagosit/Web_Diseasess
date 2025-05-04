@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4 fade-in">
+
+    <h2 class="text-success mb-4">Bienvenido, {{ request.user.first_name }}</h2>
+
+    <div class="row g-4 mb-5">
+
+        <!-- Tarjeta 1: Mis últimos tratamientos -->
+        <div class="col-md-6">
+            <div class="card bg-info-subtle shadow-sm card-hover h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Mis últimos tratamientos</h5>
+                    <ul class="list-unstyled small">
+                        {% for t in tratamientos_propios %}
+                            <li>{{ t.enfermedad.nombre }} - {{ t.fecha_creacion }}</li>
+                        {% empty %}
+                            <li class="text-muted">No has creado tratamientos aún.</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'listar_tratamientos' %}" class="btn btn-sm btn-outline-primary mt-2">Ver todos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2: Últimas enfermedades tratadas -->
+        <div class="col-md-6">
+            <div class="card bg-success-subtle shadow-sm card-hover h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Enfermedades tratadas</h5>
+                    <ul class="list-unstyled small">
+                        {% for e in enfermedades_tratadas %}
+                            <li>{{ e.nombre }}</li>
+                        {% empty %}
+                            <li class="text-muted">Aún no has registrado tratamientos.</li>
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'crear_tratamiento' %}" class="btn btn-sm btn-outline-success mt-2">Agregar tratamiento</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Feed de actividad -->
+    <div class="mb-5">
+        <h4 class="text-primary">📰 Actividad reciente de otros expertos</h4>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for t in feed_otros %}
+                        <li>
+                            <strong>{{ t.experto.first_name }}</strong> trató
+                            <strong>{{ t.enfermedad.nombre }}</strong> el {{ t.fecha_creacion }}
+                        </li>
+                    {% empty %}
+                        <li class="text-muted">No hay actividad reciente.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
