@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agro_expertos',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '0000',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -132,8 +132,16 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Configuración de Email para recuperación de contraseña
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django_ses.SESBackend'
+AWS_ACCESS_KEY_ID = 'AKIASVLKB7LXKBF4W5X6'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_SES_REGION_NAME = 'us-east-1'  # Ajusta según tu región
+AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'  # Ajusta
+
 AUTH_USER_MODEL = 'app_usuarios.Usuario'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+DEFAULT_FROM_EMAIL = 'santiagoproyectosemail@gmail.com'

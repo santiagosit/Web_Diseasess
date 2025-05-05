@@ -8,6 +8,11 @@ from app_enfermedades.models import Enfermedad
 from .models import Usuario
 from .forms import RegistroExpertoForm
 from django.contrib import messages
+from .forms_reset import EmailRecoveryForm, PinVerificationForm, PasswordResetForm
+from django.core.mail import send_mail
+import random, string, time
+from django.utils import timezone
+from django.contrib.auth.hashers import make_password
 
 def registro_experto(request):
     if request.method == 'POST':
@@ -154,3 +159,81 @@ def crear_admin(request):
 def logout_usuario(request):
     logout(request)
     return redirect('login')
+
+
+def recuperar(request):
+    if request.method == 'POST':
+        form = EmailRecoveryForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            try:
+                usuario = Usuario.objects.get(email=email)
+            except Usuario.DoesNotExist:
+                messages.error(request, 'No existe usuario con ese correo.')
+                return render(request, 'app_usuarios/recuperar.html', {'form': form})
+            # Generar PIN y guardar en sesión
+            pin = ''.join(random.choices(string.digits, k=6))
+            expires_at = time.time() + 600  # 10 minutos
+            request.session['reset_email'] = email
+            request.session['reset_pin'] = pin
+            request.session['reset_pin_expires'] = expires_at
+            # Enviar correo
+            send_mail(
+                'Tu código de recuperación',
+                f'Tu código PIN es: {pin}',
+                None,
+                [email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Se ha enviado un PIN a tu correo.')
+            return redirect('verificar_pin')
+    else:
+        form = EmailRecoveryForm()
+    return render(request, 'app_usuarios/recuperar.html', {'form': form})
+
+
+def verificar_pin(request):
+    if not request.session.get('reset_email'):
+        return redirect('recuperar')
+    if request.method == 'POST':
+        form = PinVerificationForm(request.POST)
+        if form.is_valid():
+            pin = form.cleaned_data['pin']
+            session_pin = request.session.get('reset_pin')
+            expires = request.session.get('reset_pin_expires')
+            if not session_pin or not expires or time.time() > expires:
+                messages.error(request, 'El PIN ha expirado. Solicita uno nuevo.')
+                return redirect('recuperar')
+            if pin == session_pin:
+                request.session['reset_pin_verified'] = True
+                return redirect('reset_password')
+            else:
+                messages.error(request, 'PIN incorrecto.')
+    else:
+        form = PinVerificationForm()
+    return render(request, 'app_usuarios/verificar_pin.html', {'form': form})
+
+
+def reset_password(request):
+    if not request.session.get('reset_pin_verified'):
+        return redirect('recuperar')
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = request.session.get('reset_email')
+            password = form.cleaned_data['new_password1']
+            try:
+                usuario = Usuario.objects.get(email=email)
+            except Usuario.DoesNotExist:
+                messages.error(request, 'Error inesperado. Intenta de nuevo.')
+                return redirect('recuperar')
+            usuario.password = make_password(password)
+            usuario.save()
+            # Limpiar sesión
+            for key in ['reset_email','reset_pin','reset_pin_expires','reset_pin_verified']:
+                request.session.pop(key, None)
+            messages.success(request, 'Contraseña restablecida. Ahora puedes iniciar sesión.')
+            return redirect('login')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'app_usuarios/reset_password.html', {'form': form})

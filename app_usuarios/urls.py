@@ -10,4 +10,9 @@ urlpatterns = [
     path('cambiar_estado/<int:experto_id>/<str:nuevo_estado>/', views.cambiar_estado_experto, name='cambiar_estado'),
     path('reportes/', views.reportes_admin, name='reportes_admin'),
     path('crear-admin/', views.crear_admin, name='crear_admin'),
+
+    # Recuperación de contraseña
+    path('recuperar/', views.recuperar, name='recuperar'),
+    path('verificar_pin/', views.verificar_pin, name='verificar_pin'),
+    path('reset_password/', views.reset_password, name='reset_password'),
 ]
