@@ -1,4 +1,21 @@
 
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE app_enfermedades_enfermedad;
+TRUNCATE TABLE app_tratamientos_tratamiento;
+TRUNCATE TABLE app_usuarios_usuario_groups;
+TRUNCATE TABLE app_usuarios_usuario_user_permissions;
+TRUNCATE TABLE app_usuarios_usuario;
+TRUNCATE TABLE app_validaciones_cuestionario;
+TRUNCATE TABLE auth_group_permissions;
+TRUNCATE TABLE auth_group;
+TRUNCATE TABLE auth_permission;
+TRUNCATE TABLE django_admin_log;
+TRUNCATE TABLE django_content_type;
+TRUNCATE TABLE django_migrations;
+TRUNCATE TABLE django_session;
+
+
 
 INSERT INTO `app_enfermedades_enfermedad` (`id`, `nombre`, `caracteristicas`, `descripcion`, `estado`) VALUES
 (3, 'Tizón del maíz', 'Manchas negras en hojas y tallos', 'Causado por el hongo Exserohilum turcicum, afecta el maíz en condiciones húmedas.', 'Verificada'),
@@ -159,3 +176,4 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 
 COMMIT;
 
+SET FOREIGN_KEY_CHECKS = 1;
