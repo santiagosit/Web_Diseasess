@@ -13,7 +13,9 @@ from django.core.mail import send_mail
 import random, string, time
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
-
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
 def registro_experto(request):
     if request.method == 'POST':
         form = RegistroExpertoForm(request.POST, request.FILES)
@@ -64,9 +66,25 @@ def revisar_solicitudes(request):
 
 @user_passes_test(es_admin)
 def cambiar_estado_experto(request, experto_id, nuevo_estado):
+
     experto = Usuario.objects.get(id=experto_id)
     experto.estado = nuevo_estado
     experto.save()
+
+    # Enviar correo al solicitante
+    subject = 'Notificación de decisión de solicitud'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to_email = [experto.email]
+    context = {
+        'username': experto.username,
+        'aprobado': nuevo_estado == 'activo',
+        'puntaje': getattr(experto, 'puntaje', 'N/A') # si se quiere mostrar puntaje
+    }
+    html_content = render_to_string('email_decision.html', context)
+    msg = EmailMultiAlternatives(subject, '', from_email, to_email)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
     return redirect('revisar_solicitudes')
 
 from django.contrib.auth.decorators import login_required

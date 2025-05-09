@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Notificación de Decisión</title>
+</head>
+<body>
+    <p>Hola {{ username }},</p>
+    <p>Te notificamos que tu solicitud ha sido <strong>{% if aprobado %}aprobada{% else %}rechazada{% endif %}</strong>.</p>
+    <p>Puntaje obtenido: {{ puntaje }}%</p>
+    <p>Gracias por participar.</p>
+</body>
+</html>
